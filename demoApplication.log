@@ -1,0 +1,12 @@
+[main] INFO  clientapp.ClientApp  - No server connection Connection refused: connect
+[main] INFO  clientapp.ClientApp  - No server connection Connection refused: connect
+[main] ERROR clientapp.Client  - serverapp.communication.cervercommands.Message
+[main] ERROR clientapp.Client  - serverapp.communication.cervercommands.Message
+[main] ERROR clientapp.Client  - serverapp.communication.cervercommands.Message
+[main] ERROR clientapp.Client  - serverapp.communication.cervercommands.Message
+[main] ERROR clientapp.Client  - serverapp.communication.cervercommands.Message
+[main] ERROR clientapp.Client  - serverapp.communication.cervercommands.Message
+[main] INFO  clientapp.ClientApp  - No server connection Connection refused: connect
+[main] INFO  clientapp.ClientApp  - No server connection Connection refused: connect
+[main] INFO  clientapp.ClientApp  - No server connection Connection refused: connect
+[main] INFO  clientapp.ClientApp  - No server connection Connection refused: connect
