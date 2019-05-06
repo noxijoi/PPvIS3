@@ -1,7 +1,9 @@
 package clientapp.managedb;
 
 import clientapp.Client;
-import clientapp.entity.Student;
+import lib.TypeOfSelection;
+import lib.communication.cervercommands.Message;
+import lib.entity.Student;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 import org.eclipse.swt.widgets.MessageBox;
@@ -38,14 +40,14 @@ public class Controller {
 
     }
 
-    public List<Student> askPage( int currentPage) {
+    public List<Student> askPage(int currentPage) {
         try {
             return client.askPage(currentTableName, currentPage, currentPageSize);
         } catch (IOException e) {
-            LOGGER.error("Can't read object from server" + e.getMessage());
-            showMessageBox("Can't read object from server");
+            LOGGER.error("Can't get page from server" + e.getMessage());
+            showMessageBox("Can't get page from server");
+            return Collections.EMPTY_LIST;
         }
-        return Collections.EMPTY_LIST;
     }
 
     private void showMessageBox(String s) {
@@ -58,8 +60,8 @@ public class Controller {
         try {
             client.askCreateStudentsTable(tableName);
         } catch (IOException e) {
-            LOGGER.error("Can't read object from server" + e.getMessage());
-            showMessageBox("Can't read object from server");
+            LOGGER.error("Can't create new table in server" + e.getMessage());
+            showMessageBox("Can't create new table in server");
         }
     }
 
@@ -67,17 +69,18 @@ public class Controller {
         try {
             client.askAddStudent(student,currentTableName);
         } catch (IOException e) {
-            LOGGER.error("Can't read object from server" + e.getMessage());
-            showMessageBox("Can't read object from server");
+            LOGGER.error("Can't add record to server" + e.getMessage());
+            showMessageBox("Can't add record to server");
         }
     }
 
     public List<Student> askDelStudentsByParam(Object firstParam, Object secondParam, TypeOfSelection type) {
         try {
             return client.askDelStudentsByParam(firstParam,secondParam,type, currentTableName, currentPageSize);
+
         } catch (IOException e) {
-            LOGGER.error("Can't read object from server" + e.getMessage());
-            showMessageBox("Can't read object from server");
+            LOGGER.error("Can't get deleted records from server" + e.getMessage());
+            showMessageBox("Can't get deleted records from server");
             return Collections.EMPTY_LIST;
         }
     }
@@ -87,24 +90,24 @@ public class Controller {
         client.askDropCurrentTable(currentTable);
     }
 
-    public int askChangeTable(String value) {
-        int recNum =0;
+    public Message askChangeTable(String value) {
+        Message msg = new Message();
         try {
-            recNum = client.askChangeTable(value, currentPageSize);
+            msg = client.askChangeTable(value, currentPageSize);
             currentTableName = value;
         } catch (IOException e) {
-            LOGGER.error("Can't read object from server" + e.getMessage());
-            showMessageBox("Can't read object from server");
+            LOGGER.error("Can't get new table from server" + e.getMessage());
+            showMessageBox("Can't get new table from server");
         }
-        return recNum;
+        return msg;
     }
 
     public List<Student> askFindStudentByParam(Object firstParam, Object secondParam, TypeOfSelection type) {
         try {
             return client.askFindStudentByParam(firstParam, secondParam, type, currentTableName, currentPageSize);
         } catch (IOException e) {
-            LOGGER.error("Can't read object from server" + e.getMessage());
-            showMessageBox("Can't read object from server");
+            LOGGER.error("Can't get found records from server" + e.getMessage());
+            showMessageBox("Can't get found records from server");
             return Collections.EMPTY_LIST;
         }
     }
@@ -115,5 +118,15 @@ public class Controller {
 
     public void setCurrentPageSize(int numOfRecords) {
         currentPageSize = numOfRecords;
+    }
+
+    public int askNumOfRecords() {
+        try {
+            return  client.askNumOfRecords(currentTableName);
+        } catch (IOException e) {
+            LOGGER.error("Can't get num of records from server" + e.getMessage());
+            showMessageBox("Can't get num of records from server");
+            return 0;
+        }
     }
 }

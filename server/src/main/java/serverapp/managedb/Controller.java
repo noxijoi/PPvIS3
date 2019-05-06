@@ -1,11 +1,12 @@
 package serverapp.managedb;
 
+import lib.TypeOfSelection;
+import lib.communication.ContentController;
+import lib.entity.StudArray;
+import lib.entity.Student;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
-import org.eclipse.swt.widgets.MessageBox;
 import org.eclipse.swt.widgets.Shell;
-import serverapp.entity.StudArray;
-import serverapp.entity.Student;
 
 import java.util.List;
 
@@ -41,11 +42,6 @@ public class Controller {
 
     }
 
-    private void showMessageBox(String s) {
-        MessageBox mb= new MessageBox(parent);
-        mb.setMessage(s);
-        mb.open();
-    }
 
     public void askCreateStudentsTable(String tableName) {
             contentController.createStudentsTable(tableName);
@@ -56,7 +52,7 @@ public class Controller {
     }
 
     public List<Student> askDelStudentsByParam(Object firstParam, Object secondParam, TypeOfSelection type) {
-        contentController.createStudentsTable(currentTableName+"deleted");
+        contentController.clearTable(currentTableName+"deleted");
         List<Student> temp =contentController.delStudentsByParam(firstParam,secondParam,type, currentTableName);
         contentController.addAllStudents(temp, currentTableName+"deleted");
         return contentController.getPage(currentPageSize, 0, currentTableName+"deleted");
@@ -74,7 +70,6 @@ public class Controller {
     }
 
     public List<Student> askFindStudentByParam(Object firstParam, Object secondParam, TypeOfSelection type) {
-        contentController.createStudentsTable(currentTableName+"found");
         contentController.clearTable(currentTableName+"found");
         List<Student> temp = contentController.findStudentByParam(firstParam,secondParam,type, currentTableName);
         contentController.addAllStudents(temp, currentTableName+"found");

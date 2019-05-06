@@ -1,6 +1,7 @@
 package clientapp.xml.open;
 
-import clientapp.entity.StudArray;
+
+import lib.entity.StudArray;
 import org.xml.sax.SAXException;
 
 import javax.xml.parsers.ParserConfigurationException;

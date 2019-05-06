@@ -1,7 +1,8 @@
 package clientapp.xml.open;
 
-import clientapp.entity.StudArray;
-import clientapp.managedb.ContentController;
+
+import lib.communication.ContentController;
+import lib.entity.StudArray;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.widgets.FileDialog;

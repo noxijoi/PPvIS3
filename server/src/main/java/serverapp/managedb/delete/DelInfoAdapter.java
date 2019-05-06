@@ -1,16 +1,16 @@
 package serverapp.managedb.delete;
 
 
+import lib.TypeOfSelection;
+import lib.entity.Name;
+import lib.entity.Student;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.*;
-import serverapp.entity.Name;
-import serverapp.entity.Student;
 import serverapp.managedb.Controller;
-import serverapp.managedb.TypeOfSelection;
 import serverapp.viewcomponents.TableComponent;
 
 import java.util.List;

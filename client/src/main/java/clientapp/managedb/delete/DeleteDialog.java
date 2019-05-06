@@ -1,8 +1,8 @@
 package clientapp.managedb.delete;
 
-import clientapp.Client;
 import clientapp.managedb.ComboTypeAdapter;
 import clientapp.managedb.Controller;
+import clientapp.view.FormManipulator;
 import clientapp.view.TableComponent;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridLayout;
@@ -24,14 +24,22 @@ public class DeleteDialog {
         "by NUMofTASK or NUMofDONE TASKS","by NUM of UNDONE TASKS"};
         comboType.setItems(types);
 
-        Button deleteButton = new Button(dialog, SWT.PUSH);
+        Button deleteButton = FormManipulator.createButton(dialog, "Delete");
         deleteButton.setEnabled(false);
 
         deletionParams = new Group(dialog, SWT.SHADOW_ETCHED_IN);
         deletionParams.setVisible(false);
-        TableComponent resultTable = new TableComponent(dialog, new Controller(controller.getClient(), shell, controller.getCurrentTableName()+"deleted"));
+        controller.askCreateStudentsTable(controller.getCurrentTableName()+"deleted");
+        TableComponent resultTable = new TableComponent(dialog,
+                new Controller(controller.getClient(), shell, controller.getCurrentTableName()+"deleted"));
         comboType.addSelectionListener(new ComboTypeAdapter(deletionParams, controller, deleteButton));
         deleteButton. addSelectionListener(new DelInfoAdapter(deletionParams, comboType, controller, resultTable));
+        dialog.addListener(SWT.Close, new Listener() {
+            @Override
+            public void handleEvent(Event event) {
+                controller.askDeleteTable(controller.getCurrentTableName()+"deleted");
+            }
+        });
         dialog.pack();
         dialog.open();
     }

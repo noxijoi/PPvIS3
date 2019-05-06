@@ -16,10 +16,10 @@ public class ServerLogger  implements Runnable{
         this.text = text;
     }
 
-    public void log(String message){
+    public synchronized void log(String message){
         Date date  = new Date();
         SimpleDateFormat dateFormat = new SimpleDateFormat("hh:mm:ss");
-        text.append(dateFormat.format(date)+ " "+ message + "\n");
+        //text.append(dateFormat.format(date)+ " "+ message + "\n");
     }
 
     public void setText(Text text) {

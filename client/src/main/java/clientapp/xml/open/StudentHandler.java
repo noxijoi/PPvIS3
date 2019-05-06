@@ -1,8 +1,9 @@
 package clientapp.xml.open;
 
-import clientapp.entity.Name;
-import clientapp.entity.StudArray;
-import clientapp.entity.Student;
+
+import lib.entity.Name;
+import lib.entity.StudArray;
+import lib.entity.Student;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;
@@ -65,8 +66,10 @@ public class StudentHandler extends DefaultHandler {
         switch (qName){
             case STUD_ARRAY:
                 studArray = new StudArray();
+                break;
             case STUDENTS:
                 studentList = new ArrayList<>();
+                break;
             case STUDENT:
                 student = new Student();
                 break;

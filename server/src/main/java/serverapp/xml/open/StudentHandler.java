@@ -1,11 +1,11 @@
 package serverapp.xml.open;
 
+import lib.entity.Name;
+import lib.entity.StudArray;
+import lib.entity.Student;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;
-import serverapp.entity.Name;
-import serverapp.entity.StudArray;
-import serverapp.entity.Student;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -13,7 +13,7 @@ import java.util.List;
 public class StudentHandler extends DefaultHandler {
     private StudArray studArray;
 
-    StudArray getStudentList(){
+    StudArray getStudentList() {
         return studArray;
     }
 
@@ -62,7 +62,7 @@ public class StudentHandler extends DefaultHandler {
 
     @Override
     public void startElement(String uri, String localName, String qName, Attributes attributes) {
-        switch (qName){
+        switch (qName) {
             case STUD_ARRAY:
                 studArray = new StudArray();
                 break;
@@ -75,14 +75,14 @@ public class StudentHandler extends DefaultHandler {
             case NAME:
                 name = new Name();
                 break;
-                default:
-                    break;
+            default:
+                break;
         }
     }
 
     @Override
     public void endElement(String uri, String localName, String qName) {
-        switch (qName){
+        switch (qName) {
             case STUDENTS:
                 studArray.setStudents(studentList);
                 studArray.setName(studArrayName);

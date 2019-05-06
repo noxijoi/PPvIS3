@@ -1,8 +1,9 @@
 package clientapp.view;
 
 
-import clientapp.entity.Student;
+
 import clientapp.managedb.Controller;
+import lib.entity.Student;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
@@ -129,12 +130,10 @@ public class TableComponent {
     }
     public void addAllStudents(List<Student> studentList){
         page.addAll(studentList);
-        setPage();
-        updateTotalRecordsNumLabel();
-        updatePageIndicatorLabel();
+        update();
     }
 
-    private void setPage() {
+    public void setPage() {
         table.removeAll();
         page = controller.askPage(currentPage);
         for (Student student : page) {
@@ -149,6 +148,7 @@ public class TableComponent {
     }
 
     private int getNumOfPages() {
+        totalRecords = controller.askNumOfRecords();
         if(totalRecords % recordsPerPage == 0){
             return totalRecords / recordsPerPage;
         } else {
@@ -158,27 +158,23 @@ public class TableComponent {
 
     private void toFirstPage(){
         currentPage = 0;
-        setPage();
-        updatePageIndicatorLabel();
+        update();
     }
     private void toLastPage() {
             currentPage = getNumOfPages() - 1;
-            setPage();
-            updatePageIndicatorLabel();
+            update();
     }
     private void toPrevPage(){
         if(currentPage > 0){
             currentPage--;
-            setPage();
-            updatePageIndicatorLabel();
+            update();
         }
 
     }
     private void toNextPage(){
         if(currentPage < getNumOfPages() - 1 ){
             currentPage++;
-            setPage();
-            updatePageIndicatorLabel();
+            update();
         }
     }
 
@@ -196,9 +192,7 @@ public class TableComponent {
     private void resize(int numOfRecords){
         recordsPerPage = numOfRecords;
         controller.setCurrentPageSize(numOfRecords);
-        updateCurrentPageNumber();
-        updatePageIndicatorLabel();
-        setPage();
+        update();
         group.setSize(group.computeSize(SWT.DEFAULT, SWT.DEFAULT));
         table.setSize(table.computeSize(SWT.DEFAULT, 300));
         Composite parent = group.getShell();
@@ -258,5 +252,11 @@ public class TableComponent {
 
     public void setTotalRecords(int totalRecords) {
         this.totalRecords = totalRecords;
+    }
+
+    public void update() {
+        setPage();
+        updateTotalRecordsNumLabel();
+        updateCurrentPageNumber();
     }
 }

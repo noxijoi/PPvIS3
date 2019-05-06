@@ -1,10 +1,8 @@
 package clientapp.managedb.addrecord;
-
-import clientapp.Client;
-import clientapp.entity.Name;
-import clientapp.entity.Student;
 import clientapp.managedb.Controller;
 import clientapp.view.FormManipulator;
+import lib.entity.Name;
+import lib.entity.Student;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;

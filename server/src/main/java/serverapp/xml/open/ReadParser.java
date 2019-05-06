@@ -1,7 +1,7 @@
 package serverapp.xml.open;
 
+import lib.entity.StudArray;
 import org.xml.sax.SAXException;
-import serverapp.entity.StudArray;
 
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.parsers.SAXParser;

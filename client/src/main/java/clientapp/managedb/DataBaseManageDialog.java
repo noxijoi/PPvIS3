@@ -7,39 +7,31 @@ import clientapp.managedb.search.SearchDialog;
 import clientapp.view.FormManipulator;
 import clientapp.view.TableComponent;
 import clientapp.view.VerifyWordListener;
-import clientapp.xml.save.DOMWriter;
+import lib.communication.cervercommands.Message;
+import lib.entity.Student;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.FocusAdapter;
+import org.eclipse.swt.events.FocusEvent;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.layout.RowLayout;
-import org.eclipse.swt.widgets.Button;
-import org.eclipse.swt.widgets.Combo;
-import org.eclipse.swt.widgets.FileDialog;
-import org.eclipse.swt.widgets.Label;
-import org.eclipse.swt.widgets.MessageBox;
-import org.eclipse.swt.widgets.Shell;
-import org.eclipse.swt.widgets.Text;
+import org.eclipse.swt.widgets.*;
 
-import java.util.Arrays;
 import java.util.List;
 
 public class DataBaseManageDialog {
 
     private Shell shell;
     private TableComponent tableComponent;
-    private Combo tablesCombo ;
+    private Combo tablesCombo;
     private String currentTable;
     private Controller controller;
 
     public DataBaseManageDialog(Shell parent, Client client) {
-        List<String> tablesNames = client.askAllTablesNames();
-        tablesNames.forEach(tableName -> tablesCombo.add(tableName));
-        if(!tablesNames.isEmpty()){
-        currentTable = tablesNames.get(0);}
 
-        this.controller = new Controller(client, parent, currentTable);
+        this.controller = new Controller(client, parent, null);
         shell = createShell(parent);
         shell.pack();
         shell.open();
@@ -50,7 +42,7 @@ public class DataBaseManageDialog {
     }
 
     private Shell createShell(Shell parent) {
-        Shell shell = new Shell(parent );
+        Shell shell = new Shell(parent);
         shell.setText("Manage data");
         shell.setRedraw(true);
 
@@ -71,14 +63,23 @@ public class DataBaseManageDialog {
         tableComponent.setLayoutData(tableComponentGridData);
 
         new Label(shell, SWT.NONE).setText("Select Table");
-        tablesCombo = new Combo(shell, SWT.DROP_DOWN |SWT.READ_ONLY );
+        tablesCombo = new Combo(shell, SWT.DROP_DOWN | SWT.READ_ONLY);
 
+        tablesCombo.addFocusListener(new FocusAdapter() {
+            @Override
+            public void focusGained(FocusEvent e) {
+                updateCombo();
+            }
+        });
         tablesCombo.addSelectionListener(new SelectionAdapter() {
             @Override
             public void widgetSelected(SelectionEvent selectionEvent) {
                 String value =
-                    tablesCombo.getItem(tablesCombo.getSelectionIndex());
-                tableComponent.setRecordsNum(controller.askChangeTable(value));
+                        tablesCombo.getItem(tablesCombo.getSelectionIndex());
+                Message msg = controller.askChangeTable(value);
+                tableComponent.clear();
+                tableComponent.setRecordsNum(msg.getRecordsNum());
+                tableComponent.addAllStudents((List<Student>) msg.getResultList());
 
             }
         });
@@ -87,42 +88,46 @@ public class DataBaseManageDialog {
         deleteTableButton.addSelectionListener(new SelectionAdapter() {
             @Override
             public void widgetSelected(SelectionEvent selectionEvent) {
-                MessageBox confirm = new MessageBox(shell, SWT.ICON_QUESTION | SWT.OK |SWT.CANCEL);
-                confirm.setText("delete Table");
-                confirm.setMessage
-                        ("Do you really want delete "+ tableComponent.getName() + " table???");
-                int code = confirm.open();
-                if(code == SWT.YES){
-                    controller.askDeleteTable(currentTable);
-                    updateCombo();
+                if (controller.getCurrentTableName() != null) {
+                    MessageBox confirm = new MessageBox(shell, SWT.ICON_QUESTION | SWT.OK | SWT.CANCEL);
+                    confirm.setText("delete Table");
+                    confirm.setMessage
+                            ("Do you really want delete " + tableComponent.getName() + " table???");
+                    int code = confirm.open();
+                    if (code == SWT.OK) {
+                        controller.askDeleteTable(currentTable);
+                    }
+                } else {
+                    MessageBox box = new MessageBox(shell);
+                    box.setText("No selected table");
+                    box.open();
                 }
 
 
             }
         });
-        Button addTable = FormManipulator.createButton(shell,"Add Table");
+        Button addTable = FormManipulator.createButton(shell, "Add Table");
         addTable.addSelectionListener(new SelectionAdapter() {
             @Override
             public void widgetSelected(SelectionEvent selectionEvent) {
-                Shell askNameDialog =  new Shell(shell);
+                Shell askNameDialog = new Shell(shell);
                 RowLayout rowLayout = new RowLayout();
                 askNameDialog.setLayout(rowLayout);
                 askNameDialog.setText("New table");
                 new Label(askNameDialog, SWT.NONE).setText("Enter Table name:");
                 Text text = new Text(askNameDialog, SWT.SINGLE);
                 text.addVerifyListener(new VerifyWordListener());
-                Button addButton = FormManipulator.createButton(askNameDialog,"Add");
+                Button addButton = FormManipulator.createButton(askNameDialog, "Add");
                 addButton.addSelectionListener(new SelectionAdapter() {
                     @Override
                     public void widgetSelected(SelectionEvent selectionEvent) {
                         String tableName = text.getText();
-                        if(Arrays.asList(controller.askAllTablesNames()).contains(tableName)){
+                        if (controller.askAllTablesNames().contains(tableName)) {
                             MessageBox warning = new MessageBox(askNameDialog, SWT.ICON_WARNING);
                             warning.setMessage("Table with that name already exists!");
                             warning.open();
                         } else {
                             controller.askCreateStudentsTable(tableName);
-                            updateCombo();
                         }
                     }
                 });
@@ -137,21 +142,46 @@ public class DataBaseManageDialog {
         addRecordButton.addSelectionListener(new SelectionAdapter() {
             @Override
             public void widgetSelected(SelectionEvent selectionEvent) {
-                new AddDialog(shell, controller);
+                if (controller.getCurrentTableName() != null) {
+                    new AddDialog(shell, controller);
+                } else {
+                    MessageBox box = new MessageBox(shell);
+                    box.setText("No selected table");
+                    box.open();
+                }
             }
         });
         Button searchRecordsButton = FormManipulator.createButton(shell, "Search records");
         searchRecordsButton.addSelectionListener(new SelectionAdapter() {
             @Override
             public void widgetSelected(SelectionEvent selectionEvent) {
-                new SearchDialog(shell, controller);
+                if (controller.getCurrentTableName() != null) {
+                    new SearchDialog(shell, controller);
+                } else {
+                    MessageBox box = new MessageBox(shell);
+                    box.setText("No selected table");
+                    box.open();
+                }
             }
         });
         Button deleteRecordsButton = FormManipulator.createButton(shell, "Delete records");
         deleteRecordsButton.addSelectionListener(new SelectionAdapter() {
             @Override
             public void widgetSelected(SelectionEvent selectionEvent) {
-                new DeleteDialog(shell, controller);
+                if (controller.getCurrentTableName() != null) {
+                    new DeleteDialog(shell, controller);
+                } else {
+                    MessageBox box = new MessageBox(shell);
+                    box.setText("No selected table");
+                    box.open();
+                }
+            }
+        });
+        Button updateButton = FormManipulator.createButton(shell, "update table");
+        updateButton.addSelectionListener(new SelectionAdapter() {
+            @Override
+            public void widgetSelected(SelectionEvent e) {
+                tableComponent.update();
             }
         });
 
@@ -161,7 +191,7 @@ public class DataBaseManageDialog {
     private void updateCombo() {
         tablesCombo.removeAll();
         List<String> tablesNames = controller.askAllTablesNames();
-        tablesNames.forEach(name ->tablesCombo.add(name) );
+        tablesNames.forEach(name -> tablesCombo.add(name));
     }
 
     public void updateRecordsNum(int newRecNum) {

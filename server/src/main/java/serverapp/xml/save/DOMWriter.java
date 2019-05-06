@@ -1,10 +1,10 @@
 package serverapp.xml.save;
 
+import lib.entity.Name;
+import lib.entity.StudArray;
+import lib.entity.Student;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
-import serverapp.entity.Name;
-import serverapp.entity.StudArray;
-import serverapp.entity.Student;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;

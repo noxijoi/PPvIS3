@@ -1,6 +1,7 @@
 package serverapp.managedb;
 
 
+import lib.TypeOfSelection;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.layout.RowLayout;
@@ -10,8 +11,7 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Group;
 import serverapp.viewcomponents.FormManipulator;
 
-
-import static serverapp.managedb.TypeOfSelection.getTypeByNumber;
+import static lib.TypeOfSelection.getTypeByNumber;
 
 public class ComboTypeAdapter extends SelectionAdapter {
 

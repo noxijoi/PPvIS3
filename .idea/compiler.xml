@@ -10,8 +10,5 @@
         <module name="server" />
       </profile>
     </annotationProcessing>
-    <bytecodeTargetLevel>
-      <module name="server" target="8" />
-    </bytecodeTargetLevel>
   </component>
 </project>

@@ -1,9 +1,10 @@
 package clientapp;
 
-import clientapp.communication.cervercommands.Message;
-import clientapp.communication.clientcommands.*;
-import clientapp.managedb.TypeOfSelection;
-import clientapp.entity.Student;
+
+import lib.TypeOfSelection;
+import lib.communication.cervercommands.Message;
+import lib.communication.clientcommands.*;
+import lib.entity.Student;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 
@@ -20,22 +21,24 @@ public class Client {
 
     private Socket socket;
     private ClientApp app;
-    private ObjectInputStream objInStream;
-    private ObjectOutputStream objOutStream;
+    private ObjectOutputStream oos;
+    private  ObjectInputStream ois;
+
 
     public Client(Socket socket, ClientApp app) throws IOException {
         this.socket = socket;
         this.app = app;
-        this.objInStream = new ObjectInputStream(socket.getInputStream());
-        this.objOutStream = new ObjectOutputStream(socket.getOutputStream());
+        this.oos = new ObjectOutputStream(socket.getOutputStream());
+        this.ois = new ObjectInputStream(socket.getInputStream());
+
     }
 
     public void askAddStudent(Student student, String tableName) throws IOException {
         int newRecNum = 0;
         try {
             AddStudentsCommand command = new AddStudentsCommand(Collections.singletonList(student), tableName);
-            objOutStream.writeObject(command);
-            Message result = (Message) objInStream.readObject();
+            oos.writeObject(command);
+            Message result = (Message) ois.readObject();
             newRecNum = result.getRecordsNum();
 
         } catch (ClassNotFoundException e) {
@@ -48,8 +51,8 @@ public class Client {
         List<String> result = new ArrayList<>();
         try {
             GetAllProgLangCommand command = new GetAllProgLangCommand(tableName);
-            objOutStream.writeObject(command);
-            Message msg = (Message) objInStream.readObject();
+            oos.writeObject(command);
+            Message msg = (Message) ois.readObject();
             result = (List<String>) msg.getResultList();
         } catch (IOException e) {
             LOGGER.error("can't get program languages " + e.getMessage());
@@ -59,30 +62,26 @@ public class Client {
         return result;
     }
 
-    public int askChangeTable(String tableName, int recPerPage) throws IOException {
-        int result = 0;
+    public Message askChangeTable(String tableName, int recPerPage) throws IOException {
+        Message msg = new Message();
         try {
             ActivateTableCommand command = new ActivateTableCommand(tableName, recPerPage);
-            objOutStream.writeObject(command);
-            Message msg = (Message) objInStream.readObject();
-            result = msg.getRecordsNum();
+            oos.writeObject(command);
+            msg = (Message) ois.readObject();
         } catch (ClassNotFoundException e) {
             LOGGER.error(e.getMessage());
         }
-        return result;
+        return msg;
     }
 
     public boolean askDropCurrentTable(String tableName) {
         boolean done;
         try {
             DropTableCommand command = new DropTableCommand(tableName);
-            objOutStream.writeObject(command);
-            Message msg = (Message) objInStream.readObject();
+            oos.writeObject(command);
+            Message msg = (Message) ois.readObject();
             done = msg.getExecutionResult();
-        } catch (IOException e) {
-            LOGGER.error(e.getMessage());
-            done = false;
-        } catch (ClassNotFoundException e) {
+        } catch (IOException | ClassNotFoundException e) {
             LOGGER.error(e.getMessage());
             done = false;
         }
@@ -93,8 +92,9 @@ public class Client {
         List<String> result = new ArrayList<>();
         GetAllTablesNamesCommand command = new GetAllTablesNamesCommand();
         try {
-            objOutStream.writeObject(command);
-            Message msg = (Message) objInStream.readObject();
+
+            oos.writeObject(command);
+            Message msg = (Message) ois.readObject();
             result = (List<String>) msg.getResultList();
         } catch (ClassNotFoundException | IOException e) {
             LOGGER.error(e.getMessage());
@@ -105,8 +105,9 @@ public class Client {
     public void askCreateStudentsTable(String tableName) throws IOException {
         CreateTableCommand command = new CreateTableCommand(tableName);
         try {
-            objOutStream.writeObject(command);
-            Message msg = (Message) objInStream.readObject();
+
+            oos.writeObject(command);
+            Message msg = (Message) ois.readObject();
         } catch (ClassNotFoundException e) {
             LOGGER.error(e.getMessage());
         }
@@ -116,13 +117,9 @@ public class Client {
             throws IOException {
         List<Student> result = new ArrayList<>();
         try {
-            CreateTableCommand createTableCommand = new CreateTableCommand(tableName + "found");
-            objOutStream.writeObject(createTableCommand);
-            objInStream.readObject();
-
             SearchStudentsCommand command = new SearchStudentsCommand(firstParam, secondParam, type, tableName, pageSize);
-            objOutStream.writeObject(command);
-            Message msg = (Message) objInStream.readObject();
+            oos.writeObject(command);
+            Message msg = (Message) ois.readObject();
             result = (List<Student>) msg.getResultList();
         } catch (ClassNotFoundException e) {
             LOGGER.error(e.getMessage());
@@ -134,9 +131,10 @@ public class Client {
             throws IOException {
         List<Student> result = new ArrayList<>();
         try {
+
             DeleteStudentsCommand command = new DeleteStudentsCommand(firstParam, secondParam, type, tableName, pageSize);
-            objOutStream.writeObject(command);
-            Message msg = (Message) objInStream.readObject();
+            oos.writeObject(command);
+            Message msg = (Message) ois.readObject();
             result = (List<Student>) msg.getResultList();
         } catch (ClassNotFoundException e) {
             LOGGER.error(e.getMessage());
@@ -148,12 +146,26 @@ public class Client {
         List<Student> result = new ArrayList<>();
         try {
             GetPageCommand command = new GetPageCommand(name, pageN, recordsPerPage);
-            objOutStream.writeObject(command);
-            Message msg = (Message) objInStream.readObject();
+            oos.writeObject(command);
+            Message msg = (Message) ois.readObject();
             result = (List<Student>) msg.getResultList();
         } catch (ClassNotFoundException e) {
             LOGGER.error(e.getMessage());
         }
         return result;
     }
+
+    public int askNumOfRecords(String currentTableName) throws IOException {
+        int result = 0;
+        try {
+            GetRecordsNumCommand command = new GetRecordsNumCommand(currentTableName);
+            oos.writeObject(command);
+            Message msg = (Message) ois.readObject();
+            result =  msg.getRecordsNum();
+        } catch (ClassNotFoundException e) {
+            LOGGER.error(e.getMessage());
+        }
+        return result;
+    }
 }
+

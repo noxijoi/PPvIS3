@@ -1,11 +1,11 @@
 package serverapp.managedb.search;
 
+import lib.TypeOfSelection;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.*;
 import serverapp.managedb.ComboTypeAdapter;
 import serverapp.managedb.Controller;
-import serverapp.managedb.TypeOfSelection;
 import serverapp.viewcomponents.FormManipulator;
 import serverapp.viewcomponents.TableComponent;
 
@@ -29,13 +29,13 @@ public class SearchDialog {
         searchButton.setEnabled(false);
         searchParams = new Group(dialog, SWT.SHADOW_ETCHED_IN);
         searchParams.setVisible(false);
-        TableComponent resultTable;
-        resultTable = new TableComponent(dialog,
+        controller.askCreateStudentsTable(controller.getCurrentTableName()+"found");
+        TableComponent resultTable= new TableComponent(dialog,
                 new Controller(dialog, controller.getCurrentTableName()+"found", controller.getContentController()));
         resultTable.setVisible(false);
         typeOfSearch.addSelectionListener(new ComboTypeAdapter(searchParams, controller, searchButton));
         searchButton.addSelectionListener(new SearchInfoAdapter(searchParams, typeOfSearch, controller, resultTable));
-        dialog.addListener(SWT.CLOSE, new Listener() {
+        dialog.addListener(SWT.Close, new Listener() {
             @Override
             public void handleEvent(Event event) {
                 controller.askDeleteTable(controller.getCurrentTableName()+"found");

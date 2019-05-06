@@ -1,11 +1,11 @@
 package serverapp;
 
+import lib.communication.ContentController;
+import lib.communication.cervercommands.Message;
+import lib.communication.clientcommands.Command;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
-import serverapp.communication.cervercommands.Message;
-import serverapp.communication.clientcommands.Command;
-import serverapp.managedb.ContentController;
-
+import org.eclipse.swt.widgets.Display;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
@@ -16,30 +16,29 @@ public class ClientSocketProcess implements Runnable {
     private final static Logger LOGGER = LogManager.getLogger(ClientSocketProcess.class);
 
     private Socket socket;
-    private ServerLogger serverLogger;
+    private LoggingApp app;
     private ContentController controller;
 
-    public ClientSocketProcess(Socket socket, ServerLogger serverLogger) {
+    public ClientSocketProcess(Socket socket, LoggingApp app, ContentController controller) {
         this.socket = socket;
         this.controller = controller;
-        this.serverLogger = serverLogger;
-        run();
+        this.app = app;
     }
 
     @Override
     public void run() {
         try {
-                final ObjectInputStream inputStream = new ObjectInputStream(socket.getInputStream());
-                final ObjectOutputStream outputStream = new ObjectOutputStream(socket.getOutputStream());
+            ObjectOutputStream outputStream = new ObjectOutputStream(socket.getOutputStream());
+            ObjectInputStream inputStream = new ObjectInputStream(socket.getInputStream());
             while (socket.isConnected()) {
                 Command command = (Command) inputStream.readObject();
-                serverLogger.log(command.getDescription());
+                sendLog(command.getDescription());
                 Message message = command.execute(controller);
                 outputStream.writeObject(message);
             }
         } catch (IOException e) {
             LOGGER.error("connection error in clientSocket process because " + e.getMessage());
-            serverLogger.log("connection error in clientSocket process because " + e.getMessage());
+            sendLog("connection error in clientSocket process because " + e.getMessage());
         } catch (ClassNotFoundException e) {
             LOGGER.error(e.getMessage());
         }
@@ -48,9 +47,20 @@ public class ClientSocketProcess implements Runnable {
     public void close() {
         try {
             socket.close();
-            serverLogger.log("socket close" +socket);
+            sendLog("socket close" + socket);
         } catch (IOException e) {
             LOGGER.error("Can't close socket " + e.getMessage());
         }
+    }
+    public void sendLog(String s){
+        new Thread(new Runnable() {
+            public void run() {
+                Display.getDefault().asyncExec(new Runnable() {
+                    public void run() {
+                        app.log(s);
+                    }
+                });
+            }
+        }).start();
     }
 }

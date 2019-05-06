@@ -5,12 +5,13 @@ import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.widgets.FileDialog;
 import org.eclipse.swt.widgets.Shell;
-import serverapp.entity.StudArray;
+import serverapp.managedb.Controller;
+
 
 public class SaveAdapter extends SelectionAdapter {
-    private StudArray studArray;
-    public SaveAdapter(StudArray content) {
-        this.studArray = content;
+    private Controller controller;
+    public SaveAdapter(Controller controller) {
+        this.controller = controller;
     }
 
     @Override
@@ -24,7 +25,7 @@ public class SaveAdapter extends SelectionAdapter {
         String fn = fileDialog.open();
         if (fn != null) {
             DOMWriter domWriter = new DOMWriter();
-            domWriter.writeToFile(fn, studArray);
+            domWriter.writeToFile(fn, controller.getCurrentStudArray());
         }
     }
 }

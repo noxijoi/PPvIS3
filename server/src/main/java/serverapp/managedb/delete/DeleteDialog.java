@@ -30,11 +30,18 @@ public class DeleteDialog {
         deletionParams = new Group(dialog, SWT.SHADOW_ETCHED_IN);
         deletionParams.setVisible(false);
 
+        controller.askCreateStudentsTable(controller.getCurrentTableName()+"deleted");
         TableComponent resultTable = new TableComponent(dialog,
                 new Controller(shell, controller.getCurrentTableName()+"deleted", controller.getContentController()));
         resultTable.setVisible(true);
         comboType.addSelectionListener(new ComboTypeAdapter(deletionParams, controller, deleteButton));
         deleteButton. addSelectionListener(new DelInfoAdapter(deletionParams, comboType, controller, resultTable));
+        dialog.addListener(SWT.Close, new Listener() {
+            @Override
+            public void handleEvent(Event event) {
+                controller.askDeleteTable(controller.getCurrentTableName()+"found");
+            }
+        });
         dialog.pack();
         dialog.open();
     }

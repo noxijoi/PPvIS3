@@ -1,6 +1,7 @@
 package clientapp.xml.save;
 
-import clientapp.entity.StudArray;
+
+import lib.entity.StudArray;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;

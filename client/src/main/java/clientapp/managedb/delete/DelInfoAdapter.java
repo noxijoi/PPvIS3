@@ -1,11 +1,11 @@
 package clientapp.managedb.delete;
 
-import clientapp.Client;
 import clientapp.managedb.Controller;
-import clientapp.managedb.TypeOfSelection;
-import clientapp.entity.Name;
-import clientapp.entity.Student;
+
 import clientapp.view.TableComponent;
+import lib.TypeOfSelection;
+import lib.entity.Name;
+import lib.entity.Student;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;

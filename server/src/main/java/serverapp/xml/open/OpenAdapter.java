@@ -1,12 +1,12 @@
 package serverapp.xml.open;
 
+import lib.communication.ContentController;
+import lib.entity.StudArray;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.widgets.FileDialog;
 import org.eclipse.swt.widgets.Shell;
 import org.xml.sax.SAXException;
-import serverapp.entity.StudArray;
-import serverapp.managedb.ContentController;
 
 import javax.xml.parsers.ParserConfigurationException;
 import java.io.IOException;

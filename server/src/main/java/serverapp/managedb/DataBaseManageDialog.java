@@ -1,5 +1,6 @@
 package serverapp.managedb;
 
+import lib.communication.ContentController;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.FocusAdapter;
 import org.eclipse.swt.events.FocusEvent;
@@ -136,6 +137,7 @@ public class DataBaseManageDialog {
             public void widgetSelected(SelectionEvent selectionEvent) {
                 if(controller.getCurrentTableName()!= null) {
                     new AddDialog(shell, controller);
+                    tableComponent.setPage();
                 }else {
                     MessageBox box = new MessageBox(shell);
                     box.setText("No selected table");
@@ -173,7 +175,7 @@ public class DataBaseManageDialog {
         openXMLButton.addSelectionListener(new OpenAdapter(controller.getContentController()));
 
         Button saveXMLButton = FormManipulator.createButton(shell, "Sve to XML");
-        saveXMLButton.addSelectionListener(new SaveAdapter(controller.getCurrentStudArray()));
+        saveXMLButton.addSelectionListener(new SaveAdapter(controller));
         return shell;
 
 

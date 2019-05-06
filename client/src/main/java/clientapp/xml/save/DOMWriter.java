@@ -1,8 +1,9 @@
 package clientapp.xml.save;
 
-import clientapp.entity.Name;
-import clientapp.entity.StudArray;
-import clientapp.entity.Student;
+
+import lib.entity.Name;
+import lib.entity.StudArray;
+import lib.entity.Student;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 

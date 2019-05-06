@@ -1,12 +1,12 @@
 package serverapp.viewcomponents;
 
+import lib.entity.Student;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.*;
-import serverapp.entity.Student;
 import serverapp.managedb.Controller;
 
 import java.util.ArrayList;
@@ -118,9 +118,7 @@ public class TableComponent {
 
     public void addAllStudents(List<Student> studentList){
         page.addAll(studentList);
-        setPage();
-        updateTotalRecordsNumLabel();
-        updatePageIndicatorLabel();
+        update();
     }
 
     public void setPage() {
@@ -149,27 +147,23 @@ public class TableComponent {
 
     private void toFirstPage(){
         currentPage = 0;
-        setPage();
-        updatePageIndicatorLabel();
+        update();
     }
     private void toLastPage() {
             currentPage = getNumOfPages() - 1;
-            setPage();
-            updatePageIndicatorLabel();
+            update();
     }
     private void toPrevPage(){
         if(currentPage > 0){
             currentPage--;
-            setPage();
-            updatePageIndicatorLabel();
+            update();
         }
 
     }
     private void toNextPage(){
         if(currentPage < getNumOfPages() - 1 ){
             currentPage++;
-            setPage();
-            updatePageIndicatorLabel();
+            update();
         }
     }
 
@@ -236,5 +230,11 @@ public class TableComponent {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public void  update(){
+        setPage();
+        updateTotalRecordsNumLabel();
+        updateCurrentPageNumber();
     }
 }

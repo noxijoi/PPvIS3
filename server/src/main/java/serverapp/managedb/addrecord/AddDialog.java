@@ -1,6 +1,8 @@
 package serverapp.managedb.addrecord;
 
 
+import lib.entity.Name;
+import lib.entity.Student;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
@@ -9,9 +11,7 @@ import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
-import serverapp.entity.Name;
-import serverapp.entity.Student;
-import serverapp.managedb.ContentController;
+
 import serverapp.managedb.Controller;
 import serverapp.viewcomponents.FormManipulator;
 
@@ -22,7 +22,11 @@ import java.util.List;
 
 public class AddDialog {
 
-    private List<Text> inputFields = new ArrayList<>();
+    private List<Text> inputFields;
+
+    {
+        inputFields = new ArrayList<>();
+    }
 
 
     public AddDialog(Shell parent, Controller controller){
